@@ -9,6 +9,7 @@ import java.time.Month;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class UserMealsUtil {
     public static void main(String[] args) {
@@ -24,6 +25,10 @@ public class UserMealsUtil {
 
         List<UserMealWithExcess> mealsTo = filteredByCycles(meals, LocalTime.of(7, 0), LocalTime.of(12, 0), 2000);
         mealsTo.forEach(System.out::println);
+
+        List <UserMealWithExcess> mealsStream = filteredByStreams(meals, LocalTime.of(7, 0), LocalTime.of(12, 0), 2000);
+        mealsStream.forEach(x -> System.out.println(x));
+
 
 //        System.out.println(filteredByStreams(meals, LocalTime.of(7, 0), LocalTime.of(12, 0), 2000));
     }
@@ -43,8 +48,15 @@ public class UserMealsUtil {
         return list;
     }
 
-    public static List<UserMealWithExcess> filteredByStreams(List<UserMeal> meals, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
-        // TODO Implement by streams
-        return null;
+    public  static List<UserMealWithExcess> filteredByStreams(List<UserMeal> meals, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
+        // счетчик калорий за день
+        int caloriesDayCont = meals.stream().mapToInt(UserMeal::getCalories).sum();
+
+       List<UserMealWithExcess> list = meals.stream()
+               .filter(s ->s.getDateTime().toLocalTime().isAfter(startTime)) // фильтр
+               .filter(s-> s.getDateTime().toLocalTime().isBefore(endTime)) // фильтр 2
+               .map(c -> new UserMealWithExcess(c.getDateTime(),c.getDescription(),c.getCalories(),caloriesDayCont> caloriesPerDay))// создаем новый элемент
+               .collect(Collectors.toList()); // передаем в лист
+        return list;
     }
 }
