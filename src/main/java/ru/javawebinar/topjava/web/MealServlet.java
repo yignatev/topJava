@@ -18,8 +18,8 @@ import static ru.javawebinar.topjava.util.MealsUtil.getMeals;
 public class MealServlet extends HttpServlet {
     private static final Logger log = getLogger(MealServlet.class);
     final static int CALORIES_PER_DAY = 2000;
-    final static LocalTime START_TIME = LocalTime.of(0, 0);
-    final static LocalTime END_TIME = LocalTime.of(23, 59);
+    final static LocalTime START_TIME = LocalTime.MIN;
+    final static LocalTime END_TIME = LocalTime.MAX;
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
