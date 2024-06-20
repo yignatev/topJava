@@ -5,28 +5,9 @@ import java.time.format.DateTimeFormatter;
 
 public class MealTo {
     private final LocalDateTime dateTime;
-
     private final String description;
-
     private final int calories;
-
-   private boolean excess;
-
-    public String getDateTime() {
-        return dateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public int getCalories() {
-        return calories;
-    }
-
-    public boolean isExcess() {
-        return excess;
-    }
+    private final boolean excess;
 
     public MealTo(LocalDateTime dateTime, String description, int calories, boolean excess) {
         this.dateTime = dateTime;
@@ -43,5 +24,21 @@ public class MealTo {
                 ", calories=" + calories +
                 ", excess=" + excess +
                 '}';
+    }
+
+    public String getDateTime() {
+        return dateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public int getCalories() {
+        return calories;
+    }
+
+    public boolean isExcess() {
+        return excess;
     }
 }
