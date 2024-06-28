@@ -7,10 +7,12 @@ import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.UserRepository;
 import ru.javawebinar.topjava.util.UsersUtil;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 @Repository
 public class InMemoryUserRepository implements UserRepository {
@@ -24,13 +26,13 @@ public class InMemoryUserRepository implements UserRepository {
 
     @Override
     public User save(User user) {
-        if(user.isNew()){
+        if (user.isNew()) {
             user.setId(counter.incrementAndGet());
             repository.put(user.getId(), user);
             return user;
         }
         log.info("save {}", user);
-        return repository.computeIfPresent(user.getId(), (id, oldUser) ->user);
+        return repository.computeIfPresent(user.getId(), (id, oldUser) -> user);
     }
 
     @Override
@@ -48,7 +50,8 @@ public class InMemoryUserRepository implements UserRepository {
     @Override
     public List<User> getAll() {
         log.info("getAll");
-        return (List<User>) repository.values();
+        Comparator<User> compareByName = Comparator.comparing(User::getName).thenComparing(User::getName);
+        return repository.values().stream().sorted(compareByName).collect(Collectors.toList());
     }
 
     @Override
@@ -56,5 +59,6 @@ public class InMemoryUserRepository implements UserRepository {
         log.info("getByEmail {}", email);
         return null;
     }
+
     private static final Logger log = LoggerFactory.getLogger(InMemoryUserRepository.class);
 }
