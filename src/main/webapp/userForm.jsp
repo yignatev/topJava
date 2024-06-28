@@ -37,7 +37,7 @@
     </dl>
     <dl>
       <dt>email:</dt>
-      <dd><input type="text" value="${user.email}" size=40 name="email" required></dd>
+      <dd><input type="text" value="${user.email}" name="email" required></dd>
     </dl>
     <dl>
       <dt>Пароль:</dt>
