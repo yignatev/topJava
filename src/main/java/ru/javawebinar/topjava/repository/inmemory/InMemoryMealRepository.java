@@ -31,13 +31,17 @@ public class InMemoryMealRepository implements MealRepository {
     }
 
     @Override
-    public boolean delete(int id) {
-        return repository.remove(id) != null;
+    public boolean delete(int id, int userId) {
+        Meal meal = repository.get(id);
+        return meal.getUserId() == userId ? repository.remove(id) != null : null;
+        //return repository.remove(id) != null;
     }
 
     @Override
-    public Meal get(int id) {
-        return repository.get(id);
+    public Meal get(int mealId, int userId) {
+        Meal meal = repository.get(mealId);
+        return meal.getUserId() == userId ? meal : null;
+        //return repository.get(mealId);
     }
 
     @Override
@@ -45,5 +49,10 @@ public class InMemoryMealRepository implements MealRepository {
         Comparator<Meal> compareByDate = Comparator.comparing(Meal::getDate).thenComparing(Meal::getDate);
         return repository.values().stream().sorted(compareByDate.reversed()).collect(Collectors.toList());
     }
+    @Override
+    public Collection<Meal> getAllUsersMeal(int userId){
+        return getAll().stream().filter(s-> s.getUserId() == 1).collect(Collectors.toList());
+    }
+
 }
 
