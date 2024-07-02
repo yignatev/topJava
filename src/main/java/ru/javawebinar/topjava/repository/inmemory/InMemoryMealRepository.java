@@ -19,11 +19,13 @@ public class InMemoryMealRepository implements MealRepository {
     private final AtomicInteger counter = new AtomicInteger(0);
 
     {
-        MealsUtil.meals.forEach(this::save);
+        for (Meal meal : MealsUtil.meals) {
+            save(meal, meal.getUserId());
+        }
     }
 
     @Override
-    public Meal save(Meal meal) {
+    public Meal save(Meal meal, int userId) {
         if (meal.isNew()) {
             meal.setId(counter.incrementAndGet());
             repository.put(meal.getId(), meal);
@@ -31,8 +33,13 @@ public class InMemoryMealRepository implements MealRepository {
             return meal;
         }
         // handle case: update, but not present in storage
-        log.info("edit {}", meal);
-        return repository.computeIfPresent(meal.getId(), (id, oldMeal) -> meal);
+        if (meal.getUserId().equals(userId)) {
+            log.info("edit {}", meal);
+            return repository.computeIfPresent(meal.getId(), (id, oldMeal) -> meal);
+        }
+        log.info("this Meal {} is not yours {}", meal, userId);
+        return null;
+
     }
 
     @Override
@@ -53,21 +60,18 @@ public class InMemoryMealRepository implements MealRepository {
             log.info("got {}", meal);
             return meal;
         }
-        log.info("noting to Get");
+        log.info("noting to get");
         return null;
-    }
-
-    @Override
-    public Collection<Meal> getAll() {
-        Comparator<Meal> compareByDate = Comparator.comparing(Meal::getDate).thenComparing(Meal::getTime);
-        log.info("getAll");
-        return repository.values().stream().sorted(compareByDate.reversed()).collect(Collectors.toList());
     }
 
     @Override
     public Collection<Meal> getAllUsersMeal(int userId) {
         log.info("getAllUsersMeal by user {}", userId);
-        return getAll().stream().filter(s -> s.getUserId() == 1).collect(Collectors.toList());
+        Comparator<Meal> compareByDateAndTime = Comparator.comparing(Meal::getDate).thenComparing(Meal::getTime);
+        return repository.values().stream().
+                filter(m -> m.getUserId().equals(userId)).
+                sorted(compareByDateAndTime).
+                collect(Collectors.toList());
     }
 
 }
