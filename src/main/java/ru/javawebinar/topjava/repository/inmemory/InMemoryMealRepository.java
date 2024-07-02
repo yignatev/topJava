@@ -59,7 +59,7 @@ public class InMemoryMealRepository implements MealRepository {
 
     @Override
     public Collection<Meal> getAll() {
-        Comparator<Meal> compareByDate = Comparator.comparing(Meal::getDate).thenComparing(Meal::getDate);
+        Comparator<Meal> compareByDate = Comparator.comparing(Meal::getDate).thenComparing(Meal::getTime);
         log.info("getAll");
         return repository.values().stream().sorted(compareByDate.reversed()).collect(Collectors.toList());
     }
