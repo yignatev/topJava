@@ -6,8 +6,8 @@ import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
 import ru.javawebinar.topjava.util.MealsUtil;
 
-import java.util.Collection;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -65,7 +65,7 @@ public class InMemoryMealRepository implements MealRepository {
     }
 
     @Override
-    public Collection<Meal> getAllUsersMeal(int userId) {
+    public List<Meal> getAll(int userId) {
         log.info("getAllUsersMeal by user {}", userId);
         Comparator<Meal> compareByDateAndTime = Comparator.comparing(Meal::getDate).thenComparing(Meal::getTime);
         return repository.values().stream().
