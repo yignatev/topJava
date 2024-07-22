@@ -3,16 +3,19 @@ package ru.javawebinar.topjava.repository.jpa;
 import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.stereotype.Repository;
 import ru.javawebinar.topjava.model.Meal;
+import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.MealRepository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.transaction.Transactional;
+
+import org.springframework.transaction.annotation.Transactional;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
-@Transactional
+@Transactional(readOnly = true)
 public class JpaMealRepository implements MealRepository {
 
     @PersistenceContext
@@ -21,18 +24,20 @@ public class JpaMealRepository implements MealRepository {
     @Override
     @Transactional
     public Meal save(Meal meal, int userId) {
+        meal.setUser(em.getReference(User.class, userId)); // мы назначаем пришедшей еде id пришедего пользователя
         if (meal.isNew()) {
-            em.persist(meal);
+            em.persist(meal);// сохраняем еду без проверки на пользователя т.е. можно создать еду другому пользователю
             return meal;
-        } else {
-            return em.merge(meal);
+        } else if (get(meal.id(), userId) == null) {
+            return null;
         }
+        return em.merge(meal); // а править еду можно только свою почему ?
     }
 
     @Override
     @Transactional
     public boolean delete(int id, int userId) {
-        return em.createNamedQuery(Meal.DELETE, Meal.class)
+        return em.createNamedQuery(Meal.DELETE)
                 .setParameter("id", id)
                 .setParameter("userid", userId)
                 .executeUpdate() != 0;
@@ -57,7 +62,7 @@ public class JpaMealRepository implements MealRepository {
 
     @Override
     public List<Meal> getBetweenHalfOpen(LocalDateTime startDateTime, LocalDateTime endDateTime, int userId) {
-        return em.createNamedQuery(Meal.GET_BETWEEN_TIME, Meal.class)
+        return em.createNamedQuery("Meal.GET_BETWEEN_TIME", Meal.class)
                 .setParameter("userid", userId)
                 .setParameter("startDateTime", startDateTime)
                 .setParameter("endDateTime", endDateTime)

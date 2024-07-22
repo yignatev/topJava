@@ -1,48 +1,43 @@
 package ru.javawebinar.topjava.model;
 
+import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.Range;
+
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @NamedQueries({
-        @NamedQuery(name = "Meal.DELETE", query = "DELETE FROM Meal m WHERE m.id=:id AND m.user=:userid"),
-        @NamedQuery(name = "Meal.GET_MEAL", query = "SELECT m FROM Meal m WHERE m.id=:id AND m.user=:userid"),
-        @NamedQuery(name = "Meal.GET_BY_USER_SORTED",query = "SELECT m FROM Meal m WHERE m.user=:userid ORDER BY m.dateTime"),
-        @NamedQuery(name ="Meal.GET_BETWEEN_TIME", query = "SELECT m FROM Meal m WHERE m.user=:userid AND m.dateTime BETWEEN :startDateTime AND :endDateTime")
+        @NamedQuery(name = "Meal.DELETE", query = "DELETE FROM Meal m WHERE m.id=:id AND m.user.id=:userid"),
+        @NamedQuery(name = "Meal.GET_MEAL", query = "SELECT m FROM Meal m WHERE m.id=:id AND m.user.id=:userid"),
+        @NamedQuery(name = "Meal.GET_BY_USER_SORTED", query = "SELECT m FROM Meal m WHERE m.user.id = :userid ORDER BY m.dateTime DESC"),
+        @NamedQuery(name = "Meal.GET_BETWEEN_TIME", query = "SELECT m FROM Meal m WHERE m.user.id=:userid AND m.dateTime >= :startDateTime AND m.dateTime < :endDateTime ORDER BY m.dateTime DESC")
 })
-
 @Entity
-@Table(name = "meal")
+@Table(name = "meal", uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "date_time"}))
 public class Meal extends AbstractBaseEntity {
 
-    public static final String DELETE ="Meal.delete";
-    public static final String GET_BY_USER_SORTED ="Meal.getAll";
-    public static final String GET_MEAL ="Meal.get";
-    public static final String GET_BETWEEN_TIME = "Meal.getBetweenHalfOpen";
+    public static final String DELETE = "Meal.DELETE";
+    public static final String GET_BY_USER_SORTED = "Meal.GET_BY_USER_SORTED";
+    public static final String GET_MEAL = "Meal.GET_MEAL";
 
-    @Column(name = "date_time")
-    @NotBlank
+    @Column(name = "date_time", nullable = false)
     @NotNull
     private LocalDateTime dateTime;
 
-    @Column(name = "description")
+    @Column(name = "description", nullable = false)
     @NotBlank
-    @NotNull
-    @Size(max = 128)
+    @Length(min = 3, max = 128)
     private String description;
 
-    @Column(name = "calories")
-    @NotBlank
-    @NotNull
+    @Column(name = "calories", nullable = false)
+    @Range(min = 1, max = 10000)
     private int calories;
 
-    @NotBlank
+    @JoinColumn(name = "user_id", nullable = false)
     @NotNull
-    @JoinColumn(name="user_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
