@@ -13,7 +13,8 @@ import java.time.LocalTime;
         @NamedQuery(name = "Meal.DELETE", query = "DELETE FROM Meal m WHERE m.id=:id AND m.user.id=:userid"),
         @NamedQuery(name = "Meal.GET_MEAL", query = "SELECT m FROM Meal m WHERE m.id=:id AND m.user.id=:userid"),
         @NamedQuery(name = "Meal.GET_BY_USER_SORTED", query = "SELECT m FROM Meal m WHERE m.user.id = :userid ORDER BY m.dateTime DESC"),
-        @NamedQuery(name = "Meal.GET_BETWEEN_TIME", query = "SELECT m FROM Meal m WHERE m.user.id=:userid AND m.dateTime >= :startDateTime AND m.dateTime < :endDateTime ORDER BY m.dateTime DESC")
+        @NamedQuery(name = "Meal.GET_BETWEEN_TIME", query = "SELECT m FROM Meal m WHERE m.user.id=:userid " +
+                "AND m.dateTime >= :startDateTime AND m.dateTime < :endDateTime ORDER BY m.dateTime DESC")
 })
 @Entity
 @Table(name = "meal", uniqueConstraints = @UniqueConstraint(columnNames = {"user_id", "date_time"}))
@@ -22,6 +23,7 @@ public class Meal extends AbstractBaseEntity {
     public static final String DELETE = "Meal.DELETE";
     public static final String GET_BY_USER_SORTED = "Meal.GET_BY_USER_SORTED";
     public static final String GET_MEAL = "Meal.GET_MEAL";
+    public static final String GET_BETWEEN_TIME = "Meal.GET_BETWEEN_TIME";
 
     @Column(name = "date_time", nullable = false)
     @NotNull
