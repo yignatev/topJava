@@ -24,14 +24,14 @@ public class JpaMealRepository implements MealRepository {
     @Override
     @Transactional
     public Meal save(Meal meal, int userId) {
-        meal.setUser(em.getReference(User.class, userId)); // мы назначаем пришедшей еде id пришедего пользователя
+        meal.setUser(em.getReference(User.class, userId));
         if (meal.isNew()) {
-            em.persist(meal);// сохраняем еду без проверки на пользователя т.е. можно создать еду другому пользователю
+            em.persist(meal);
             return meal;
         } else if (get(meal.id(), userId) == null) {
             return null;
         }
-        return em.merge(meal); // а править еду можно только свою почему ?
+        return em.merge(meal);
     }
 
     @Override
