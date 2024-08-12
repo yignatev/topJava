@@ -23,7 +23,10 @@
 
 <!--    <logger name="org.postgresql" level="debug"/>-->
 <!--    <logger name="org.springframework.jdbc" level="info"/>-->
-    <logger name="ru.javawebinar.topjava" level="debug"/>
+
+   <!-- <logger name="ru.javawebinar.topjava" level="debug"/> -->
+     <logger name="org.hibernate.type.descriptor.sql.BasicBinder" level="trace"/>  <!-- параметры в sql запросе -->
+    <logger name="org.springframework.orm.jpa" level="debug"/> <!-- транзакциии -->
 
     <root level="INFO">
         <appender-ref ref="console"/>
