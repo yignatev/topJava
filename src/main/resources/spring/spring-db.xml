@@ -11,7 +11,8 @@
        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
        http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa.xsd">
 
-    <context:component-scan base-package="ru.javawebinar.**.repository.jpa"/>
+     <context:component-scan base-package="ru.javawebinar.**.repository.jpa"/>
+
 
     <context:component-scan base-package="ru.javawebinar.**.repository.datajpa"/>
     <jpa:repositories base-package="ru.javawebinar.**.repository.datajpa"/>
@@ -93,8 +94,8 @@
 
     <beans profile="jdbc">
 
-
-       <!-- <context:component-scan base-package="" -->
+      <!--  <context:component-scan base-package="ru.javawebinar.topjava.repository.jdbc *"/> -->
+                <!-- base-package="classpath" -->
           <!--  />/<bean id="" -->
            <!-- <jdbc:initialize-database>  -->
     
@@ -102,9 +103,15 @@
 
     </beans>
     <beans profile="jpa">
+        <bean id="mealRepository2" class="ru.javawebinar.topjava.repository.MealRepository" abstract="true"/>
+        <bean id="mealService2" class="ru.javawebinar.topjava.service.MealService"/>
+
+
+
 
     </beans>
     <beans profile="datajpa">
+<!--        <bean id="dataMeal" class="ru.javawebinar.topjava.repository.datajpa.DataJpaMealRepository"/>-->
 
     </beans>
 </beans>
