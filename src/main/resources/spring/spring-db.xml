@@ -11,9 +11,9 @@
        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
        http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa.xsd">
 
-     <context:component-scan base-package="ru.javawebinar.**.repository.jpa"/>
 
 
+    <context:component-scan base-package="ru.javawebinar.**.repository.jpa"/>
     <context:component-scan base-package="ru.javawebinar.**.repository.datajpa"/>
     <jpa:repositories base-package="ru.javawebinar.**.repository.datajpa"/>
 
@@ -30,7 +30,8 @@
         <property name="jpaPropertyMap">
             <map>
                 <entry key="#{T(org.hibernate.cfg.AvailableSettings).FORMAT_SQL}" value="${hibernate.format_sql}"/>
-                <entry key="#{T(org.hibernate.cfg.AvailableSettings).USE_SQL_COMMENTS}" value="${hibernate.use_sql_comments}"/>
+                <entry key="#{T(org.hibernate.cfg.AvailableSettings).USE_SQL_COMMENTS}"
+                       value="${hibernate.use_sql_comments}"/>
                 <entry key="#{T(org.hibernate.cfg.AvailableSettings).JPA_PROXY_COMPLIANCE}" value="false"/>
                 <!--<entry key="#{T(org.hibernate.cfg.AvailableSettings).HBM2DDL_AUTO}" value="${hibernate.hbm2ddl.auto}"/>-->
             </map>
@@ -94,24 +95,33 @@
 
     <beans profile="jdbc">
 
-      <!--  <context:component-scan base-package="ru.javawebinar.topjava.repository.jdbc *"/> -->
-                <!-- base-package="classpath" -->
-          <!--  />/<bean id="" -->
-           <!-- <jdbc:initialize-database>  -->
-    
+        <!--  <context:component-scan base-package="ru.javawebinar.topjava.repository.jdbc *"/> -->
+        <!-- base-package="classpath" -->
+        <!--  />/<bean id="" -->
+        <!-- <jdbc:initialize-database>  -->
 
 
     </beans>
     <beans profile="jpa">
-        <bean id="mealRepository2" class="ru.javawebinar.topjava.repository.MealRepository" abstract="true"/>
-        <bean id="mealService2" class="ru.javawebinar.topjava.service.MealService"/>
+        <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager"
+              p:entityManagerFactory-ref="entityManagerFactory"/>
 
+        <bean class="ru.javawebinar.topjava.repository.jpa.JpaUserRepository" id="jpaUserRepository"/>
+        <bean class="ru.javawebinar.topjava.service.UserService">
+            <constructor-arg name="repository" ref="jpaUserRepository"/>
+        </bean>
 
+        <bean class="ru.javawebinar.topjava.repository.jpa.JpaMealRepository" id="jpaMealRepository"/>
+        <bean class="ru.javawebinar.topjava.service.MealService">
+            <constructor-arg name="repository" ref="jpaMealRepository"/>
+        </bean>
 
 
     </beans>
     <beans profile="datajpa">
-<!--        <bean id="dataMeal" class="ru.javawebinar.topjava.repository.datajpa.DataJpaMealRepository"/>-->
+        <!--        <bean id="dataMeal" class="ru.javawebinar.topjava.repository.datajpa.DataJpaMealRepository"/>-->
 
     </beans>
+
 </beans>
+
